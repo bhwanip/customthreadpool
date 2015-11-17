@@ -1,12 +1,14 @@
 package com.custimthreadpool;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 
+import com.customthreadpool.CustomLatch;
 import com.customthreadpool.ThreadPool;
 
 public class TestThreadPool {
@@ -16,13 +18,13 @@ public class TestThreadPool {
 
 	@Test
 	public void test() throws InterruptedException {
-		CountDownLatch taskCountLatch = new CountDownLatch(TASK_COUNT);
+		CustomLatch taskCountLatch = new CustomLatch(TASK_COUNT);
 		ThreadPool pool = new ThreadPool(THREAD_POOL_SIZE);
 		for (int i = 0; i < TASK_COUNT; i++) {
 			Runnable task = new TestRunnableTask(taskCountLatch);
 			pool.execute(task);
 		}
-		if(!taskCountLatch.await(30, TimeUnit.SECONDS)){
+		if(!taskCountLatch.await(30*1000)){
 			fail("Not all tasks yet completed, tasks pending: " + taskCountLatch.getCount());
 		}
 		assertThat(pool.getTasksQue().size(), is(0));
