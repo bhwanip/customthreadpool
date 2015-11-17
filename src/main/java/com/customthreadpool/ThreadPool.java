@@ -22,7 +22,7 @@ public class ThreadPool {
 		threads = new Thread[threadCount];
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new WorkerThread(tasksQue);
-			threads[i].setName("MyThread-" + i);
+			threads[i].setName(WorkerThread.class.getName() + i);
 			threads[i].start();
 
 		}
